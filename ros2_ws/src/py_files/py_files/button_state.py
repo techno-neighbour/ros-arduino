@@ -7,12 +7,15 @@ class ButtonState(Node):
         super().__init__("button_state")
         self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
         self.timer = self.create_timer(0.005, self.timerCallback)
-        self.get_logger().info("Informing the state...")
+        self.last = ""
+        self.get_logger().info("State informing has begun...")
         print()
         
     def timerCallback(self):
         line = self.ser.readline().decode(errors="ignore")
-        self.get_logger().info(f"Button state is: {line}")
+        if line and line != self.last:
+            self.get_logger().info(f"Button is now {line}")
+        self.last = line
 
 def main(args=None):
     rclpy.init(args=args)
