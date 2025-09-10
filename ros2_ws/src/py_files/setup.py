@@ -25,7 +25,9 @@ setup(
             'oops_talker = py_files.oops_pub:main',
             'oops_listener = py_files.oops_sub:main',
             'led_switch = py_files.led_control:main',
-            'button_state = py_files.button_state:main'
+            'button_state = py_files.button_state:main',
+            'dist_pub = py_files.dist_pub:main',
+            'dist_sub = py_files.dist_sub:main',
         ],
     },
 )

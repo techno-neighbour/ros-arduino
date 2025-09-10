@@ -14,6 +14,8 @@ class ButtonState(Node):
     def timerCallback(self):
         line = self.ser.readline().decode(errors="ignore")
         if line and line != self.last:
+            if line.startswith("P"):
+                print()
             self.get_logger().info(f"Button is now {line}")
         self.last = line
 
