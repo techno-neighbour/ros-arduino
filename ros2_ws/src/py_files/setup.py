@@ -20,14 +20,14 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'no_oops_talker = py_files.no_oops_pub:main',
-            'no_oops_listener = py_files.no_oops_sub:main',
-            'oops_talker = py_files.oops_pub:main',
-            'oops_listener = py_files.oops_sub:main',
-            'led_switch = py_files.led_control:main',
-            'button_state = py_files.button_state:main',
-            'dist_pub = py_files.dist_pub:main',
-            'dist_sub = py_files.dist_sub:main',
+            'no_oops_talker = py_files.normal.no_oops_pub:main',
+            'no_oops_listener = py_files.normal.no_oops_sub:main',
+            'oops_talker = py_files.normal.oops_pub:main',
+            'oops_listener = py_files.normal.oops_sub:main',
+            'led_switch = py_files.pyserial.led_control:main',
+            'button_state = py_files.pyserial.button_state:main',
+            'dist_pub = py_files.pyserial.dist_pub:main',
+            'dist_sub = py_files.pyserial.dist_sub:main',
         ],
     },
 )
