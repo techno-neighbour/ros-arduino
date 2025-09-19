@@ -28,6 +28,8 @@ setup(
             'button_state = py_files.pyserial.button_state:main',
             'dist_pub = py_files.pyserial.dist_pub:main',
             'dist_sub = py_files.pyserial.dist_sub:main',
+            'motor_pub = py_files.pyserial.motor_dir_pub:main',
+            'motor_sub = py_files.pyserial.motor_dir_sub:main',
         ],
     },
 )
