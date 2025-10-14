@@ -30,6 +30,9 @@ setup(
             'dist_sub = py_files.pyserial.dist_sub:main',
             'motor_pub = py_files.pyserial.motor_dir_pub:main',
             'motor_sub = py_files.pyserial.motor_dir_sub:main',
+            'mot_sen_pub = py_files.pyserial.mot_sen_pub:main',
+            'mot_sub = py_files.pyserial.mot_sub:main',
+            'sen_sub = py_files.pyserial.sen_sub:main',
         ],
     },
 )
