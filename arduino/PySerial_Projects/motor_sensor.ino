@@ -1,15 +1,15 @@
 //-------------------- PIN DEFINITIONS --------------------
 int led = 3;
-int trig = 9;
-int echo = 10;
+int stby = 8;
 
-int ena = 5;
-int in1 = 6;
-int in2 = 7;
+int trig = 2;
+int echo = 4;
 
-int enb = 11;
-int in3 = 12;
-int in4 = 13;
+int ain1 = 5;
+int ain2 = 6;
+
+int bin1 = 9;
+int bin2 = 10;
 
 //-------------------- TIMING --------------------
 unsigned long last = 0;
@@ -19,64 +19,60 @@ const unsigned long interval = 500; // ms
 void setup() {
   Serial.begin(9600);
 
+  pinMode(led, OUTPUT);
+  pinMode(stby, OUTPUT);
+
   pinMode(trig, OUTPUT);
   pinMode(echo, INPUT);
-  pinMode(led, OUTPUT);
 
-  pinMode(ena, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
+  pinMode(ain1, OUTPUT);
+  pinMode(ain2, OUTPUT);
 
-  pinMode(enb, OUTPUT);
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
+  pinMode(bin1, OUTPUT);
+  pinMode(bin2, OUTPUT);
+
+  digitalWrite(stby, HIGH);
 }
 
 //-------------------- MOTOR FUNCTIONS --------------------
 void forward() {
   Serial.println("Forward");
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-  analogWrite(ena, 106);
-  analogWrite(enb, 75);
+  analogWrite(ain1, 175);
+  digitalWrite(ain2, LOW);
+  analogWrite(bin1, 175);
+  digitalWrite(bin2, LOW);
 }
 
 void backward() {
   Serial.println("Backward");
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-  analogWrite(ena, 106);
-  analogWrite(enb, 75);
+  digitalWrite(ain1, LOW);
+  analogWrite(ain2, 175);
+  digitalWrite(bin1, LOW);
+  analogWrite(bin2, 175);
 }
 
 void left() {
   Serial.println("Left");
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-  analogWrite(ena, 0);
-  analogWrite(enb, 75);
+  digitalWrite(ain1, LOW);
+  digitalWrite(ain2, LOW);
+  analogWrite(bin1, 175);
+  digitalWrite(bin2, LOW);
 }
 
 void right() {
   Serial.println("Right");
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, LOW);
-  analogWrite(ena, 106);
-  analogWrite(enb, 0);
+  analogWrite(ain1, 175);
+  digitalWrite(ain2, LOW);
+  digitalWrite(bin1, LOW);
+  digitalWrite(bin2, LOW);
 }
 
 void stop() {
   Serial.println("No");
-  analogWrite(ena, 0);
-  analogWrite(enb, 0);
+  analogWrite(ain1, 0);
+  analogWrite(ain2, 0);
+  analogWrite(bin1, 0);
+  analogWrite(bin2, 0);
 }
 
 //-------------------- ULTRASONIC SENSOR --------------------
@@ -88,7 +84,7 @@ float readUltrasonic() {
   delayMicroseconds(10);
   digitalWrite(trig, LOW);
 
-  // Non-blocking pulse read
+  // No-block pulse read
   long duration = pulseIn(echo, HIGH, 30000); // 30ms timeout
   if (duration == 0) return -1; // no echo
   float distance = duration * 0.01715; // cm
@@ -96,7 +92,6 @@ float readUltrasonic() {
   return distance;
 }
 
-//-------------------- LOOP --------------------
 void loop() {
   //----------------- MOTOR CONTROL -----------------
   if (Serial.available() > 0) {
