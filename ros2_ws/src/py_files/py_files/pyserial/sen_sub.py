@@ -20,10 +20,10 @@ def main(args=None):
     node = Sensor()
     try:
         rclpy.spin(node)
+        node.destroy_node()
+        rclpy.shutdown()
     except KeyboardInterrupt:
-        pass
-    node.destroy_node()
-    rclpy.shutdown()
+        print(" Execution stopped: User interrupted.")
 
 if __name__ == "__main__":
     main()

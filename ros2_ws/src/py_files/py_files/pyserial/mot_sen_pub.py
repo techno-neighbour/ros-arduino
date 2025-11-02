@@ -4,13 +4,13 @@ from in_files.msg import MotorSensor
 import serial
 import threading
 
-class Motor(Node):
+class MS(Node):
     def __init__(self):
         super().__init__("motor_sensor_pub")
         self.pub = self.create_publisher(MotorSensor, "mot_sen", 10)
         self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
         self.get_logger().info("Starting node...")
-        self.timer = self.create_timer(0.5, self.timer_callback)
+        self.timer = self.create_timer(0.05, self.timer_callback)
 
         # to store last values
         self.last_dire = ""
@@ -43,13 +43,13 @@ class Motor(Node):
         
 def main(args=None):
     rclpy.init(args=args)
-    node = Motor()
+    node = MS()
     try:
         rclpy.spin(node)
+        node.destroy_node()
+        rclpy.shutdown()
     except KeyboardInterrupt:
-        pass
-    node.destroy_node()
-    rclpy.shutdown()
+        print(" Execution stopped: User interrupted.")
 
 if __name__ == "__main__":
     main()
