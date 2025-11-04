@@ -1,13 +1,16 @@
 import rclpy
-from rclpy.node import Node
-from in_files.msg import MotorSensor
+import time
 import serial
 import threading
+from rclpy.node import Node
+from in_files.msg import MotorSensor
+from std_msgs.msg import String
 
 class MS(Node):
     def __init__(self):
         super().__init__("motor_sensor_pub")
         self.pub = self.create_publisher(MotorSensor, "mot_sen", 10)
+        self.sub = self.create_subscription(String, "sen_say", self.listener_callback, 10)
         self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
         self.get_logger().info("Starting node...")
         self.timer = self.create_timer(0.05, self.timer_callback)
@@ -40,6 +43,14 @@ class MS(Node):
         msg.distance = self.last_dist
 
         self.pub.publish(msg)
+
+    def listener_callback(self, msg):
+        if msg.data:
+            self.get_logger().info(f"Sensor says to {msg.data}")
+            self.ser.write(b'2')
+            time.sleep(0.2)
+            self.ser.write(b'0')
+            msg.data = ""
         
 def main(args=None):
     rclpy.init(args=args)
