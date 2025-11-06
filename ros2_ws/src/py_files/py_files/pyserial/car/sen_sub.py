@@ -12,11 +12,19 @@ class Sensor(Node):
         print()
         
     def subCall(self, msg):
-        if msg.distance and msg.distance < 10 :
+        sen_msg = String()
+        sen_msg.data = ""
+
+        if msg.distance < 10 and not getattr(self, 'is_backing_up', False):
             self.get_logger().warn("WARNING: Too close!")
-            sen_msg = String()
             sen_msg.data = "go back"
-            self.pub.publish(sen_msg)
+            self.is_backing_up = True
+
+        elif msg.distance >= 10 and getattr(self, 'is_backing_up', False):
+            sen_msg.data = "stop"
+            self.is_backing_up = False
+
+        self.pub.publish(sen_msg)
         self.get_logger().info(f"Sensor is {msg.distance: .4f} cm")
         print()
 

@@ -47,19 +47,11 @@ class MS(Node):
         self.pub.publish(msg)
 
     def listener_callback(self, msg):# called only when sensor says 'too close.
-        # to only react if we’re not already backing up
-        if not hasattr(self, 'is_backing_up') or not self.is_backing_up:
-            self.get_logger().info(f"Sensor says to {msg.data}")
-            self.ser.write(b'2')  # reverse
-            self.is_backing_up = True
+        if msg.data == "go back":
+            self.ser.write(b'2')  
 
-            # using a once timer to stop after 0.3s
-            def stop_once():
-                self.ser.write(b'0')
-                self.is_backing_up = False
-                self.stop_timer.cancel()  # stop this timer
-
-            self.stop_timer = self.create_timer(0.2, stop_once)
+        elif msg.data == "stop":
+            self.ser.write(b'0')  
 
         
 def main(args=None):
