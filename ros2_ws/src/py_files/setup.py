@@ -35,6 +35,7 @@ setup(
             'mot_sen_pub = py_files.pyserial.car.mot_sen_pub:main',
             'mot_sub = py_files.pyserial.car.mot_sub:main',
             'sen_sub = py_files.pyserial.car.sen_sub:main',
+            'volt_sub = py_files.pyserial.car.volt_sub:main',
         ],
     },
 )

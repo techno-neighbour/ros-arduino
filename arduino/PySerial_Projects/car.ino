@@ -11,10 +11,12 @@ int ain2 = 6;
 int bin1 = 9;
 int bin2 = 10;
 
+const int bPin = A0;
+float R1 = 10000.0;
+float R2 = 10000.0;
 //-------------------- TIMING --------------------
 unsigned long last = 0;
 const unsigned long interval = 500; // ms
-
 //-------------------- SETUP --------------------
 void setup() {
   Serial.begin(9600);
@@ -74,7 +76,19 @@ void stop() {
   analogWrite(bin1, 0);
   analogWrite(bin2, 0);
 }
+//------------------------- VOLTAGE -------------------------
+String voltage() {
+  int get = analogRead(bPin);
+  float div_val = R2 /(R1 + R2);
+  float conv = get * (5.0/1023.0) ;
+  float volt = conv / div_val ;
+  volt = volt + 0.25 ;
 
+  String volt_str = String(volt);
+  volt_str = volt_str+"V";
+
+  return volt_str;
+}
 //-------------------- ULTRASONIC SENSOR --------------------
 float readUltrasonic() {
   // Trigger pulse
@@ -104,12 +118,13 @@ void loop() {
       case '0': stop(); break;
     }
   }
-
-  //----------------- SENSOR&LED -----------------
+  //----------------- SENSOR, VOLTAGE, LED -----------------
   unsigned long now = millis();
   if (now - last >= interval) {
     last = now;
     float dist = readUltrasonic();
+    String volt = voltage();
+    Serial.println(volt);
     if (dist > 0) {
       Serial.println(dist);
       if (dist < 10) digitalWrite(led, HIGH);

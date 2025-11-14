@@ -5,7 +5,7 @@ from in_files.msg import MotorSensor
 class Motor(Node):
     def __init__(self):
         super().__init__("mot_sub")
-        self.sub = self.create_subscription(MotorSensor, "mot_sen", self.caller, 10)
+        self.sub = self.create_subscription(MotorSensor, "car", self.caller, 10)
         self.last_dir = ""
         self.get_logger().info("Updating...")
         print()

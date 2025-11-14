@@ -8,7 +8,7 @@ from std_msgs.msg import String
 class MS(Node):
     def __init__(self):
         super().__init__("motor_sensor_pub")
-        self.pub = self.create_publisher(MotorSensor, "mot_sen", 10)
+        self.pub = self.create_publisher(MotorSensor, "car", 10)
         self.sub = self.create_subscription(String, "sen_say", self.listener_callback, 10)
         self.lock = threading.Lock()
         self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
@@ -18,6 +18,7 @@ class MS(Node):
         # to store last values
         self.last_dire = ""
         self.last_dist = 0.0
+        self.last_volt = ""
 
         # to get input in background thread
         threading.Thread(target=self.read_user_input, daemon=True).start()
@@ -35,14 +36,22 @@ class MS(Node):
         line = self.ser.readline().decode(errors="ignore").strip()
         msg = MotorSensor()
 
-        if line.replace('.', '', 1).isdigit():
+        if msg is None:
+            return
+
+        if line.endswith('V'):
+            self.last_volt = line  # voltage
+
+        elif line.replace('.', '', 1).isdigit():
             self.last_dist = float(line) # distance
+
         elif line:
             self.last_dire = line  # direction
 
         with self.lock:
             msg.direction = self.last_dire
             msg.distance = self.last_dist
+            msg.voltage = self.last_volt
 
         self.pub.publish(msg)
 
@@ -62,7 +71,7 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
     except KeyboardInterrupt:
-        print(" Execution stopped: User interrupted.")
+        print(" \nExecution stopped: User interrupted.")
 
 if __name__ == "__main__":
     main()

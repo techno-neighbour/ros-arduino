@@ -7,7 +7,7 @@ class Sensor(Node):
     def __init__(self):
         super().__init__("sen_sub")
         self.pub = self.create_publisher(String, "sen_say", 10)
-        self.sub = self.create_subscription(MotorSensor, "mot_sen", self.subCall, 10)
+        self.sub = self.create_subscription(MotorSensor, "car", self.subCall, 10)
         self.get_logger().info("Updating...")
         print()
         
@@ -24,7 +24,9 @@ class Sensor(Node):
             sen_msg.data = "stop"
             self.is_backing_up = False
 
-        self.pub.publish(sen_msg)
+        if sen_msg.data:
+            self.pub.publish(sen_msg)
+
         self.get_logger().info(f"Sensor is {msg.distance: .4f} cm")
         print()
 
